@@ -86,6 +86,11 @@ test_that("pack works", {
   expect_equal(x, y)
   expect_equal(unpack('V', x), list(1234567))
 
+  ## Signed 64-bit integer, big-endian
+  # x <- pack('q', 9223370619441175807)
+  # expect_equal(x, as.raw(c(0x87, 0xd6, 0x12, 0)))
+  # expect_equal(unpack('V', x), list(1234567))
+
   ## Null bytes
   x <- pack('x', "foo")  # input data doesn't matter
   expect_equal(x, as.raw(0))

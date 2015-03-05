@@ -95,6 +95,13 @@ function(template, ...) {
       val <- rawToNum( values[1:4], 4 )
       values <- values[-(1:4)]
     } else
+    # A 64-bit signed twos-complement integer, big-endian.
+    if( type == 'q' ) {
+      ## Can't do native 8-bit numeric reads, so we read 4-bit chunks
+      m <- matrix(readBin(x, "integer", n=2*byte, endian="big"), nrow=2)
+      val <- m[1,]*16^8 + m[2,] + (m[2,]<0) * 2^32
+      values <- values[-seq.int(8*byte)]
+    } else
     # A double-precision float in the native format.
     if( type == 'd' ) {
       val <- readBin(values[1:8], "numeric", 1L, 8L)
