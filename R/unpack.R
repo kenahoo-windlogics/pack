@@ -95,11 +95,17 @@ function(template, ...) {
       val <- rawToNum( values[1:4], 4 )
       values <- values[-(1:4)]
     } else
+    # An unsigned long (32-bit) in "network" (big-endian) order.
+    if( type == 'N' ) {
+      val <- readBin( values, n=byte, endian="big", signed=FALSE, size=4 )
+      values <- values[-seq.int(4*byte)]
+    } else
     # A 64-bit signed twos-complement integer, big-endian.
     if( type == 'q' ) {
       ## Can't do native 8-bit numeric reads, so we read 4-bit chunks
-      m <- matrix(readBin(x, "integer", n=2*byte, endian="big"), nrow=2)
-      val <- m[1,]*16^8 + m[2,] + (m[2,]<0) * 2^32
+      m <- matrix(unpack("l N", values), nrow=2)
+        # matrix(readBin(x, "integer", n=2*byte, endian="big"), nrow=2)
+      val <- m[1,]*16^8 + m[2,]
       values <- values[-seq.int(8*byte)]
     } else
     # A double-precision float in the native format.

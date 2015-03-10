@@ -87,9 +87,9 @@ test_that("pack works", {
   expect_equal(unpack('V', x), list(1234567))
 
   ## Signed 64-bit integer, big-endian
-  # x <- pack('q', 9223370619441175807)
-  # expect_equal(x, as.raw(c(0x87, 0xd6, 0x12, 0)))
-  # expect_equal(unpack('V', x), list(1234567))
+  # x <- readBin(pipe("perl -e 'print pack(q{q>}, 9223370619441175807)'", "rb"), raw(), n=8)
+  x <- as.raw(c(0x7f, 0xff, 0xfe, 0xb5, 0xfb, 0x90, 0xdc, 0xff)) # No corresponding 'q>' pack() field
+  expect_equal(unpack('q1', x), list(9223370619441175807))
 
   ## Null bytes
   x <- pack('x', "foo")  # input data doesn't matter
